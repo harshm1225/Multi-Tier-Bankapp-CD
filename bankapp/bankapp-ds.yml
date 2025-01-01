@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: bankapp-container
-        image: harshalmahajan173/bankapp:v1
+        image: harshalmahajan173/bankapp:v2
         ports:
         - containerPort: 8080
           name: http-port
