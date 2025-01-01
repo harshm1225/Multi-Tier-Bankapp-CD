@@ -1,0 +1,47 @@
+---
+# Bank Application Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bankapp-deployment
+  labels:
+    app: bankapp
+spec:
+  replicas: 2
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: bankapp
+  template:
+    metadata:
+      labels:
+        app: bankapp
+    spec:
+      containers:
+      - name: bankapp-container
+        image: harshalmahajan173/bankapp:v1
+        ports:
+        - containerPort: 8080
+          name: http-port
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:mysql://mysql-database-service:3306/bankapp_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+        - name: SPRING_DATASOURCE_USERNAME
+          value: root
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: SecurePass@123
+---
+# Bank Application Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: bankapp-loadbalancer-service
+  labels:
+    app: bankapp
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: http-port
+  selector:
+    app: bankapp

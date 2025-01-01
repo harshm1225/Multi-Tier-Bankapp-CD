@@ -1,0 +1,44 @@
+---
+# MySQL Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-database
+  labels:
+    app: bankapp-database
+spec:
+  selector:
+    matchLabels:
+      app: bankapp-database
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: bankapp-database
+    spec:
+      containers:
+      - name: mysql-container
+        image: mysql:8.0
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "SecurePass@123"
+        - name: MYSQL_DATABASE
+          value: "bankapp_db"
+        ports:
+        - containerPort: 3306
+          name: mysql-port
+---
+# MySQL Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-database-service
+  labels:
+    app: bankapp-database
+spec:
+  ports:
+  - port: 3306
+    targetPort: mysql-port
+  selector:
+    app: bankapp-database
